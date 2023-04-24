@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 2)
     {
-        printf("Usage: %s <port> <log-file>\n", argv[0]);
+        printf("Usage: %s <port>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -72,11 +72,18 @@ int main(int argc, char *argv[])
                 break;
             }
             
-            char buf[256];
-            int ret = recv(client, buf, sizeof(buf), 0);
-            buf[ret] = 0;
-            printf("%d bytes received", ret);
-            printf("%s", buf);
+            char *token = strtok(buf, ";");
+            printf("Hostname: %s\n", token);
+            token = strtok(NULL, ";");
+            printf("Number of disks: %s\n", token);
+            int n = atoi(token);
+            while (token = strtok(NULL, ";"))
+            {
+                printf("\t- Disk %s: ", token);
+                token = strtok(NULL, ";");
+                printf("%sGB\n", token);
+            }
+            printf("\n");
         close(client);
     }
     return 0;
